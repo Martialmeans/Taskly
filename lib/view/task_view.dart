@@ -22,20 +22,37 @@ class Taskview extends StatelessWidget {
             itemCount: taskProvider.tasks.length,
             itemBuilder: (context, index) {
               final task = taskProvider.tasks[index];
-              return CheckboxListTile(
-                title: Text(
-                  task.taskName,
-                  style: TextStyle(
-                    decoration: task.isComplete
-                            ? TextDecoration.lineThrough
-                            : TextDecoration.none,
-                  ),
-                ),
-                value: task.isComplete,
-                controlAffinity: ListTileControlAffinity.leading,
-                onChanged: (value) {
-                  taskProvider.completeTask(index);
+              return GestureDetector(
+                onLongPress: () {
+                  taskProvider.removeTask(index);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Task Deleted"),
+                      duration: Duration(seconds: 2),
+                      action: SnackBarAction(
+                        label: "Undo",
+                        onPressed: () {
+                          taskProvider.addtask(task.taskName);
+                        },
+                      ),
+                    ),
+                  );
                 },
+                child: CheckboxListTile(
+                  title: Text(
+                    task.taskName,
+                    style: TextStyle(
+                      decoration: task.isComplete
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                    ),
+                  ),
+                  value: task.isComplete,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  onChanged: (value) {
+                    taskProvider.completeTask(index);
+                  },
+                ),
               );
             },
           ),
